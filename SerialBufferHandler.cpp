@@ -22,12 +22,12 @@ void SerialBufferHandler::flush() {
 }
 
 size_t SerialBufferHandler::read_bytes(uint8_t *buf, size_t len) {
-    if (len == 0) {
-        return 0;
-    }
-
     size_t max = _recv_len - _recv_pos;
     size_t to_read =  len > max ? max : len;
+
+    if (len == 0 || to_read == 0) {
+        return 0;
+    }
 
     lock();
     memcpy(buf, _buffer + _recv_pos, to_read);
@@ -89,11 +89,10 @@ void SerialBufferHandler::event() {
 
 void SerialBufferHandler::read() {
     if (_fileHandle->readable() || (_recv_pos < _recv_len)) {
-        printf("Serial readable %d,  %u, %u \n", _fileHandle->readable(), _recv_len, _recv_pos);
+        // printf("Serial readable %d,  %u, %u \n", _fileHandle->readable(), _recv_len, _recv_pos);
 
         while (true) {
             if (!(_fileHandle->readable() || (_recv_pos < _recv_len))) {
-                printf("nothing\n");
                 break; // we have nothing to read anymore
             }
 
@@ -185,7 +184,7 @@ void SerialBufferHandler::lock() {
 }
 
 void SerialBufferHandler::unlock() {
-    if (_fileHandle->readable() || (_recv_pos < _recv_len)) {
+    if (_fileHandle->readable()) {
         _event_id = _queue.call(Callback<void()>(this, &SerialBufferHandler::read));
     }
 
