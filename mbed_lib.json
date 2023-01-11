@@ -1,0 +1,10 @@
+{
+  "name": "serialbufferhandler",
+  "config": {
+    "buffer-size": {
+      "help": "Max size buffer",
+      "value": 110,
+      "required": true
+    }
+  }
+}
