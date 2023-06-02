@@ -7,10 +7,9 @@ SerialBufferHandler::SerialBufferHandler(FileHandle *fh, EventQueue &queue): _fi
 }
 
 void SerialBufferHandler::attach(Callback<void()> cb, milliseconds timeout) {
-    lock();
     _cb = cb;
     _timeout = timeout;
-    unlock();
+
 }
 
 void SerialBufferHandler::flush() {
@@ -79,6 +78,10 @@ size_t SerialBufferHandler::rewind_until(const uint8_t *find, size_t len) {
 
 size_t SerialBufferHandler::available_bytes() {
     return _recv_len - _recv_pos;
+}
+
+uint8_t SerialBufferHandler::check_byte(size_t index) {
+    return _buffer[index + _recv_pos];
 }
 
 void SerialBufferHandler::event() {

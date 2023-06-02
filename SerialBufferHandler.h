@@ -74,6 +74,13 @@ class SerialBufferHandler {
      */
     size_t available_bytes();
 
+    /**
+     * @brief Read byte without rewind buffer, make sure buffer len is long enough to read this
+     *
+     * @param index of byte
+     * @return uint8_t
+     */
+    uint8_t check_byte(size_t index);
   private:
 
     void event();
